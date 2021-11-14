@@ -1,0 +1,5 @@
+dist
+public
+
+# I really don't know how to configure this one on top of the others...
+*.ts
