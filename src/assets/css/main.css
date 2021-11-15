@@ -1,3 +1,5 @@
+@import './fonts.css';
+
 html,
 body,
 #app {
@@ -7,5 +9,6 @@ body,
 }
 
 html.dark {
-  background: #121212;
+  background: hsl(0deg 0% 7%);
+  color: #ddd;
 }

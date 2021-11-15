@@ -1,14 +1,28 @@
-<template>
-  <div>this is a nicely working index page asdasd</div>
-  <div text="teal-500">this is working too btw</div>
-  <p>asdasd</p>
-  <div class="i-twemoji-grinning-face-with-smiling-eyes hover:i-twemoji-face-with-tears-of-joy w-12 h-12" />
-  <p>hey buddy</p>
-  <div class="i-logos-vue text-3xl" />
-  <Test />
-  <router-link to="/nice">go to nice</router-link>
-  <div class="i-carbon-3d-ica"></div>
+<script setup>
+import vueLogo from '~/assets/images/vue_logo.png'
+</script>
 
-  <div></div>
-  <button @click="$emit('nice test', { name: 'bob' })">click on me please</button>
+<script>
+export default {
+  data() {
+    return {
+      envVariable: import.meta.env.VITE_TEST,
+    }
+  },
+}
+</script>
+
+<template>
+  This emoji will react when hovered >>
+  <div class="i-twemoji-grinning-face-with-smiling-eyes hover:i-twemoji-face-with-tears-of-joy" />
+
+  <br />
+  Firefox emoji: <span class="text-sm i-fxemoji-chicken"></span>
+  <p>here is an env variable: {{ envVariable }}</p>
+  <img :src="vueLogo" />
+
+  <app-button color="ghost" is-disabled>
+    <!-- <template #left-icon><div class="i-mdi:chevron-right"></div></template> -->
+    <template #right-icon><div class="i-mdi:bell"></div></template>
+  </app-button>
 </template>

@@ -3,12 +3,12 @@ import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 import Layouts from 'vite-plugin-vue-layouts'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import WindiCSS from 'vite-plugin-windicss'
 import Inspect from 'vite-plugin-inspect'
+import Unocss from 'unocss/vite'
+import { presetUno, presetIcons } from 'unocss'
 
 export default defineConfig({
   resolve: {
@@ -18,12 +18,13 @@ export default defineConfig({
   },
   plugins: [
     Vue({
-      include: [/\.vue$/, /\.md$/],
+      include: [/\.vue$/],
     }),
 
     // https://github.com/hannoeru/vite-plugin-pages
     Pages({
-      extensions: ['vue', 'md'],
+      extensions: ['vue'],
+      nuxtStyle: true,
     }),
 
     // https://github.com/JohnCampionJr/vite-plugin-vue-layouts
@@ -49,21 +50,9 @@ export default defineConfig({
       include: [/\.vue$/, /\.vue\?vue/],
 
       // custom resolvers
-      resolvers: [
-        // auto import icons
-        // https://github.com/antfu/unplugin-icons
-        IconsResolver({
-          componentPrefix: '',
-          // enabledCollections: ['carbon']
-        }),
-      ],
+      resolvers: [],
 
       dts: 'src/components.d.ts',
-    }),
-
-    // https://github.com/antfu/unplugin-icons
-    Icons({
-      autoInstall: true,
     }),
 
     // https://github.com/antfu/vite-plugin-windicss
@@ -75,6 +64,21 @@ export default defineConfig({
       // change this to enable inspect for debugging
       enabled: false,
     }),
+    Unocss({
+      presets: [
+        // @ts-ignore next-line
+        // presetUno(),
+        presetIcons({
+          prefix: 'i-',
+          scale: 1.15,
+          extraProperties: {
+            display: 'inline-block'
+          }
+        }),
+      ],
+      // https://github.com/antfu/unocss/issues/143#issuecomment-974265839
+      variants: presetUno().variants
+    })
   ],
 
   server: {
