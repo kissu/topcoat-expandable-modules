@@ -5,14 +5,17 @@ export default {
     color: {
       type: String,
       default: 'primary',
+      validator: (v) => ['primary', 'secondary', 'ghost'].includes(v),
     },
     isDisabled: {
       type: Boolean,
       default: false,
+      validator: (v) => [true, false].includes(v),
     },
     size: {
       type: String,
       default: 'regular',
+      validator: (v) => ['small', 'regular', 'large'].includes(v),
     },
   },
   data() {
