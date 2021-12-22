@@ -3,12 +3,12 @@ module.exports = {
   env: {
     node: true,
     browser: true,
+    'vue/setup-compiler-macros': true,
   },
-  extends: ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/prettier'],
+  extends: ['plugin:vue/vue3-recommended', 'eslint:recommended', '@vue/prettier'],
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    requireConfigFile: false,
-    parser: '@babel/eslint-parser',
-    ecmaVersion: 12,
+    ecmaVersion: 'latest',
     sourceType: 'module',
   },
   plugins: ['prettier'],
@@ -16,6 +16,9 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-undef': 'warn',
+    'no-unused-vars': 'warn',
+    'vue/script-setup-uses-vars': 'error',
+    'vue/one-component-per-file': 'off',
     // 'max-len': [1, { code: 110, tabWidth: 2 }],
   },
 }

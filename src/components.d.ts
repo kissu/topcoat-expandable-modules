@@ -5,11 +5,11 @@
 declare module 'vue' {
   export interface GlobalComponents {
     AppButton: typeof import('./components/AppButton.vue')['default']
-    BaseButton: typeof import('./components/BaseButton.vue')['default']
-    CarbonMoon: typeof import('~icons/carbon/moon')['default']
-    CarbonSun: typeof import('~icons/carbon/sun')['default']
-    MyFooter: typeof import('./components/MyFooter.vue')['default']
-    MyTest: typeof import('./components/nested/MyTest.vue')['default']
+    GlobalSimpleButton: typeof import('./components/GlobalSimpleButton.vue')['default']
+    MultiSelector: typeof import('./components/MultiSelector.vue')['default']
+    OldSearchFilter: typeof import('./components/OldSearchFilter.vue')['default']
+    TableVis: typeof import('./components/TableVis.vue')['default']
+    TestUsersProps: typeof import('./components/TestUsersProps.vue')['default']
     TheFooter: typeof import('./components/TheFooter.vue')['default']
   }
 }

@@ -40,16 +40,7 @@ export default {
 
 <template>
   <button
-    class="
-      flex
-      items-center
-      justify-center
-      font-semibold
-      text-center
-      rounded-md
-      transition-colors
-      duration-200
-    "
+    class="flex items-center justify-center font-semibold text-center transition-colors duration-200 rounded-md"
     :disabled="isDisabled"
     :class="[
       colors[color],

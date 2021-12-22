@@ -1,5 +1,5 @@
 import path from 'path'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 import Layouts from 'vite-plugin-vue-layouts'
@@ -10,98 +10,119 @@ import Inspect from 'vite-plugin-inspect'
 import Unocss from 'unocss/vite'
 import { presetUno, presetIcons } from 'unocss'
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      '~/': `${path.resolve(__dirname, 'src')}/`,
+//doc https://github.com/vitejs/vite/issues/1930#issuecomment-783747858
+const env = loadEnv(
+  'mode', // mode
+  process.cwd(), // root
+  '' // prefix (defaults to "VITE_")
+)
+
+export default defineConfig(({ mode }) => {
+  return {
+    resolve: {
+      alias: {
+        '~/': `${path.resolve(__dirname, 'src')}/`,
+      },
     },
-  },
-  plugins: [
-    Vue({
-      include: [/\.vue$/],
-    }),
 
-    // https://github.com/hannoeru/vite-plugin-pages
-    Pages({
-      extensions: ['vue'],
-      nuxtStyle: true,
-    }),
+    plugins: [
+      Vue({
+        template: {
+          compilerOptions: {
+          }
+        },
+        include: [/\.vue$/],
+      }),
+      {
+        config() {
+          //! this one is a big decision
+          return { define: { __VUE_PROD_DEVTOOLS__: env.VITE_PRODUCTION_DEVTOOLS === 'true' } }
+        },
+      },
 
-    // https://github.com/JohnCampionJr/vite-plugin-vue-layouts
-    Layouts(),
+      // https://github.com/hannoeru/vite-plugin-pages
+      Pages({
+        extensions: ['vue'],
+        nuxtStyle: true,
+      }),
 
-    // https://github.com/antfu/unplugin-auto-import
-    AutoImport({
-      imports: [
+      // https://github.com/JohnCampionJr/vite-plugin-vue-layouts
+      Layouts(),
+
+      // https://github.com/antfu/unplugin-auto-import
+      AutoImport({
+        imports: [
+          'vue',
+          'vue-router',
+          '@vueuse/head',
+          '@vueuse/core',
+        ],
+        dts: 'src/auto-imports.d.ts',
+      }),
+
+      // https://github.com/antfu/unplugin-vue-components
+      Components({
+        // allow auto load components under `./src/components/`
+        extensions: ['vue'],
+
+        // allow auto import and register components used in markdown
+        include: [/\.vue$/, /\.vue\?vue/],
+
+        // custom resolvers
+        resolvers: [],
+
+        dts: 'src/components.d.ts',
+      }),
+
+      // https://github.com/antfu/vite-plugin-windicss
+      WindiCSS({
+      }),
+
+      // https://github.com/antfu/vite-plugin-inspect
+      Inspect({
+        // change this to enable inspect for debugging
+        enabled: false,
+      }),
+      Unocss({
+        presets: [
+          // @ts-ignore next-line
+          // presetUno(),
+          presetIcons({
+            prefix: 'i-',
+            scale: 1.15,
+            extraProperties: {
+              display: 'inline-block'
+            }
+          }),
+        ],
+        // https://github.com/antfu/unocss/issues/143#issuecomment-974265839
+        // @ts-ignore
+        variants: presetUno().variants
+      })
+    ],
+
+    server: {
+      fs: {
+        strict: true,
+      },
+    },
+
+    // https://github.com/antfu/vite-ssg
+    ssgOptions: {
+      script: 'async',
+      formatting: 'minify',
+    },
+
+    optimizeDeps: {
+      include: [
         'vue',
         'vue-router',
-        '@vueuse/head',
         '@vueuse/core',
+        '@vueuse/head',
       ],
-      dts: 'src/auto-imports.d.ts',
-    }),
-
-    // https://github.com/antfu/unplugin-vue-components
-    Components({
-      // allow auto load components under `./src/components/`
-      extensions: ['vue'],
-
-      // allow auto import and register components used in markdown
-      include: [/\.vue$/, /\.vue\?vue/],
-
-      // custom resolvers
-      resolvers: [],
-
-      dts: 'src/components.d.ts',
-    }),
-
-    // https://github.com/antfu/vite-plugin-windicss
-    WindiCSS({
-    }),
-
-    // https://github.com/antfu/vite-plugin-inspect
-    Inspect({
-      // change this to enable inspect for debugging
-      enabled: false,
-    }),
-    Unocss({
-      presets: [
-        // @ts-ignore next-line
-        // presetUno(),
-        presetIcons({
-          prefix: 'i-',
-          scale: 1.15,
-          extraProperties: {
-            display: 'inline-block'
-          }
-        }),
+      exclude: [
+        'vue-demi',
       ],
-      // https://github.com/antfu/unocss/issues/143#issuecomment-974265839
-      variants: presetUno().variants
-    })
-  ],
-
-  server: {
-    fs: {
-      strict: true,
-    },
-  },
-
-  // https://github.com/antfu/vite-ssg
-  ssgOptions: {
-    script: 'async',
-    formatting: 'minify',
-  },
-
-  optimizeDeps: {
-    include: [
-      'vue',
-      'vue-router',
-      '@vueuse/core',
-      '@vueuse/head',
-    ],
-    exclude: [
-      'vue-demi',
-    ],
-  },
+    }
+  }
 })

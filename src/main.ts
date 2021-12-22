@@ -1,4 +1,5 @@
 // register vue composition api globally
+// @ts-nocheck
 import { ViteSSG } from 'vite-ssg'
 import generatedRoutes from 'virtual:generated-pages'
 import { setupLayouts } from 'virtual:generated-layouts'
@@ -16,6 +17,8 @@ import 'virtual:windi-utilities.css'
 import 'virtual:windi-devtools'
 // UnoCSS
 import 'uno.css'
+// Pinia stores 🍍
+import { globalMixins } from '~/mixins/index'
 
 const routes = setupLayouts(generatedRoutes)
 
@@ -26,5 +29,8 @@ export const createApp = ViteSSG(
   (ctx) => {
     // install all modules under `modules/`
     Object.values(import.meta.globEager('./modules/*.ts')).map(i => i.install?.(ctx))
+    const { app } = ctx
+    //* mixins
+    app.mixin(globalMixins)
   },
 )
