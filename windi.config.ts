@@ -82,6 +82,12 @@ export default defineConfig({
       black: 'hsla(0, 0%, 0%, 1)',
       // dark mode not listed here yet, will it later on https://www.figma.com/file/fo2cq0m7EcsFfjngXk8m8g/TopCoat-Design-System-v1.0?node-id=36%3A535
     },
+    screens: {
+      'sm': '640px',
+      'md': '1024px',
+      'lg': '1280px',
+      'xl': '1920px',
+    },
     fontFamily: {
       inter: "Inter, sans-serif",
     },

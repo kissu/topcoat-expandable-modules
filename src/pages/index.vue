@@ -16,6 +16,8 @@ export default {
   This emoji will react when hovered >>
   <div class="i-twemoji-grinning-face-with-smiling-eyes hover:i-twemoji-face-with-tears-of-joy" />
 
+  <div class="bg-primary-500" md="bg-success-400" lg="bg-secondary-500" xl="bg-error-500">hehe</div>
+
   <br />
   Firefox emoji: <span class="text-sm i-fxemoji-chicken"></span>
   <p>here is an env variable: {{ envVariable }}</p>
