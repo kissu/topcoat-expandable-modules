@@ -1,30 +1,28 @@
-<script setup>
-import vueLogo from '~/assets/images/vue_logo.png'
-</script>
-
-<script>
-export default {
-  data() {
-    return {
-      envVariable: import.meta.env.VITE_TEST,
-    }
-  },
-}
-</script>
-
 <template>
-  This emoji will react when hovered >>
-  <div class="i-twemoji-grinning-face-with-smiling-eyes hover:i-twemoji-face-with-tears-of-joy" />
-
-  <div class="bg-primary-500" md="bg-success-400" lg="bg-secondary-500" xl="bg-error-500">hehe</div>
-
-  <br />
-  Firefox emoji: <span class="text-sm i-fxemoji-chicken"></span>
-  <p>here is an env variable: {{ envVariable }}</p>
-  <img :src="vueLogo" />
-
-  <app-button color="ghost" is-disabled>
-    <!-- <template #left-icon><div class="i-mdi:chevron-right"></div></template> -->
-    <template #right-icon><div class="i-mdi:bell"></div></template>
-  </app-button>
+  <div>
+    <!-- Note: need to make a library like page for all components -->
+    <h1 class="pb-6">Search Filters</h1>
+    <div class="grid grid-cols-3 gap-2">
+      <t-text-input label="Default" border-width="medium" border-color="dark" border-highlight-color="secondary" />
+      <t-text-input label="Default Outlined & Loading" is-outlined is-loading />
+      <t-text-input label="Outlined & Clearable" is-outlined is-clearable="true" />
+      <t-text-input label="Label" placeholder="Placeholder & Rounded 3xl" border-width="bold" border-color="primary" border-highlight-color="secondary" is-rounded="3xl" is-outlined />
+      <t-text-input
+        label="Label"
+        placeholder="Inside Label & dark color"
+        is-inside-label
+        is-rounded="3xl"
+        inner-bg-color="dark"
+        is-outlined
+        text-color="light"
+      />
+      <t-text-input
+        label="Label"
+        placeholder="Border width is bolder"
+        border-width="extrabold"
+        is-rounded="3xl"
+        is-outlined
+      />
+    </div>
+  </div>
 </template>

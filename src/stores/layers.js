@@ -40,7 +40,7 @@ const useLayersStore = defineStore('layers', {
     updateTest() {
       this.test = 'successfully updated!'
     },
-    fetchNewComponents() {
+    async fetchNewComponents() {
       const { data } = useFetch('https://jsonplaceholder.typicode.com/users/1').get().json()
       console.log('faked fetched data', data)
       this.components = mockedComponents

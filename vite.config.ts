@@ -9,6 +9,7 @@ import WindiCSS from 'vite-plugin-windicss'
 import Inspect from 'vite-plugin-inspect'
 import Unocss from 'unocss/vite'
 import { presetUno, presetIcons } from 'unocss'
+import { visualizer } from 'rollup-plugin-visualizer';
 
 //doc https://github.com/vitejs/vite/issues/1930#issuecomment-783747858
 const env = loadEnv(
@@ -98,7 +99,10 @@ export default defineConfig(({ mode }) => {
         // https://github.com/antfu/unocss/issues/143#issuecomment-974265839
         // @ts-ignore
         variants: presetUno().variants
-      })
+      }),
+      //! please always keep this one at the end of the plugins array
+      //* you can check the bundle size by opening stats.html at the root of the project
+      visualizer({ brotliSize: true }),
     ],
 
     server: {

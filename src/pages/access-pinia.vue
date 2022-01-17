@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { useFetch, until } from '@vueuse/core'
+import { useFetch } from '@vueuse/core'
 
 export default {
   name: 'AccessPinia',
@@ -62,9 +62,8 @@ export default {
   },
   async created() {
     //? faking a layers/components fetch here
-    this.fetchNewComponents()
-    const { data, isFinished } = useFetch('https://jsonplaceholder.typicode.com/users/1').get().json()
-    await until(isFinished).toBe(true)
+    await this.fetchNewComponents()
+    const { data } = await useFetch('https://jsonplaceholder.typicode.com/users/1').get().json()
     this.email = data.value.email
   },
   methods: {
