@@ -10,7 +10,7 @@ const useLayersStore = defineStore('layers', {
       coffee: 'mocha',
       tea: 'matcha',
     },
-    test: 'basic test state',
+    test: 'yolo swag',
   }),
   getters: {
     getComponentName: (state) => {

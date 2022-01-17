@@ -18,7 +18,7 @@ import 'virtual:windi-devtools'
 // UnoCSS
 import 'uno.css'
 // Pinia stores 🍍
-import { globalMixins } from '~/mixins/index'
+import { globalMixins } from '~/mixins/indexMixin'
 
 const routes = setupLayouts(generatedRoutes)
 
@@ -32,5 +32,14 @@ export const createApp = ViteSSG(
     const { app } = ctx
     //* mixins
     app.mixin(globalMixins)
+    // app.directive('layer', {
+    //   mounted(_el, binding, vnode) {
+    //     console.log('vnode', vnode)
+    //     vnode.ref.i.data.layer = binding.value
+    //   },
+    //   updated(_el, binding, vnode) {
+    //     vnode.ref.i.data.layer = binding.value
+    //   },
+    // })
   },
 )

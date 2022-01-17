@@ -51,12 +51,12 @@
       <input
         :id="inputUuid"
         :value="value"
-        @input="value = $event.target.value"
         class="pl-5 pr-8 bg-transparent outline-none h-max group-hover:cursor-not-allowed"
         :disabled="isTrue(isDisabled)"
         :placeholder="placeholder"
         :class="[styles.borderRadius[isRounded], isTrue(isInsideLabel) ? 'pt-1 pb-3' : 'py-4']"
         aria-label="text field"
+        @input="value = $event.target.value"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @keyup.enter="urlParam = value"
@@ -231,12 +231,12 @@ export default {
   computed: {
     // Unique id for input.
     inputUuid() {
-
       // Todo: remove when spa is live
-      return 'xxxx-yy'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-      });
+      return 'xxxx-yy'.replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
 
       // Todo: enable once spa is live, not supported by topcoat-core currently
       // return nanoid()

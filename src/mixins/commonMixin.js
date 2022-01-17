@@ -4,7 +4,7 @@ import { useLayersStore } from '~/stores/layers'
 
 export const commonMixin = {
   computed: {
-    ...mapState(useLayersStore, ['test', 'filters']),
+    ...mapState(useLayersStore, ['test']),
     //? below is a getter, but we're writting it like that in Pinia as shown here https://pinia.esm.dev/core-concepts/getters.html#usage-with-the-options-api
     ...mapState(useLayersStore, { getComponentName: (store) => store.getComponentName }),
     ...mapState(useLayersStore, { getFilterValue: (store) => store.getFilterValue }),
