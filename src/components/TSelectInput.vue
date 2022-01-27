@@ -1,0 +1,353 @@
+<template>
+  <div class="relative">
+    <div
+      class="relative flex items-center w-full h-max"
+      :class="[
+        styles.borders[borderStyle],
+        styles.textColors[textColor],
+
+        isTrue(isOutlined) && [styles.bgColors[innerBgColor], styles.borderRadius[isRounded]],
+        isTrue(isDisabled) && 'opacity-30 group',
+        isTrue(isError) && 'border-error-400',
+        !isTrue(isError) && isFocused && styles.borderColors[borderHighlightColor],
+        !isTrue(isError) && !isFocused && styles.borderColors[borderColor],
+
+        isTrue(isOutlined)
+          ? styles.borderWidthSizes.outline[borderWidth]
+          : styles.borderWidthSizes.underline[borderWidth],
+      ]"
+    >
+      <!-- Label -->
+      <div class="flex flex-col justify-center w-full">
+        <div
+          class="text-left transition-colors w-max"
+          :class="[isTrue(isInsideLabel) && 'pt-2', isTrue(isError) && 'text-error-400']"
+        >
+          <!-- Inside Label -->
+          <label
+            v-if="isTrue(isInsideLabel)"
+            :for="inputUuid"
+            class="top-0 px-1 pb-1 ml-4 text-sm opacity-80 group-hover:cursor-not-allowed"
+          >
+            {{ label }}
+          </label>
+
+          <!-- Top Label -->
+          <label
+            v-else
+            class="absolute px-1 ml-4 transition-transform transform group-hover:cursor-not-allowed"
+            :for="inputUuid"
+            :class="[
+              // Translate label according to border-width.
+              isTrue(isOutlined) && styles.bgColors[innerBgColor],
+              topLabel ? styles.borderLabelPosition[borderWidth] : 'translate-y-4 h-max',
+            ]"
+          >
+            <div :class="topLabel && 'bottom-1.5'" class="relative">{{ label }}</div>
+          </label>
+        </div>
+
+        <div>
+          <!-- Select Input -->
+          <input
+            :id="inputUuid"
+            :value="selected && selected.label"
+            :disabled="isTrue(isDisabled)"
+            :class="[styles.borderRadius[isRounded], isTrue(isInsideLabel) ? 'pt-1 pb-3' : 'py-4']"
+            readonly
+            class="pl-5 pr-8 bg-transparent outline-none appearance-none cursor-pointer h-max group-hover:cursor-not-allowed w-full"
+            aria-label="select field"
+            @focus="isFocused = true"
+            @blur="isFocused = false"
+          />
+        </div>
+      </div>
+
+      <!-- Icon -->
+      <div
+        class="absolute top-0 bottom-0 right-0 pt-2 pr-3 my-auto h-max"
+        :class="styles.textColors[textColor]"
+      >
+        <div v-if="isTrue(isLoading)">
+          <i class="i-mdi:loading animate-spin"></i>
+        </div>
+        <label v-else :for="inputUuid" class="cursor-pointer">
+          <i class="transition transform i-mdi:menu-down" :class="{ 'rotate-180': isFocused }"></i>
+        </label>
+      </div>
+    </div>
+
+    <!-- Menu -->
+    <div
+      v-show="items.length && (isFocused || focusedMenuItem)"
+      class="absolute top-0 z-10 w-full max-h-48 shadow-2xl overflow-auto"
+      :class="[styles.bgColors[innerBgColor], styles.borderRadius[isRounded], styles.textColors[textColor]]"
+    >
+      <!-- Options -->
+      <div
+        v-for="item in items"
+        :key="item.id"
+        class="py-2 px-5 cursor-pointer text-left overflow-hidden"
+        :class="
+          focusedMenuItem == item.id
+            ? [styles.bgColors[menuHighlightColor], styles.textColors[menuTextHighlightColor]]
+            : styles.bgColors[innerBgColor]
+        "
+        @mouseenter="focusedMenuItem = item.id"
+        @mouseleave="focusedMenuItem = null"
+        @click="selectItem(item)"
+      >
+        {{ item.label }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+// import { nanoid } from 'nanoid'
+// Todo: enable once spa is live, not supported by topcoat-core currently
+
+export default {
+  // eslint-disable-next-line
+  name: 't-select-input',
+  props: {
+    //* Strings
+    borderColor: {
+      type: String,
+      default: 'neutral',
+    },
+    borderHighlightColor: {
+      type: String,
+      default: 'primary',
+    },
+    borderStyle: {
+      type: String,
+      default: 'solid',
+      validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
+    },
+    borderWidth: {
+      type: String,
+      default: 'normal',
+      validator: (v) => ['normal', 'medium', 'bold', 'extrabold'].includes(v),
+    },
+    innerBgColor: {
+      type: String,
+      default: 'light',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark'].includes(v),
+    },
+    label: {
+      type: String,
+      default: '',
+    },
+    menuHighlightColor: {
+      type: String,
+      default: 'dark',
+    },
+    menuTextHighlightColor: {
+      type: String,
+      default: 'light',
+    },
+    textColor: {
+      type: String,
+      default: 'dark',
+    },
+
+    //* String-leans
+    isClearable: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isDisabled: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isError: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isInsideLabel: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isLoading: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isOutlined: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isRounded: {
+      type: [Boolean, String],
+      default: 'none',
+      validator: (v) => ['true', 'none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
+    },
+  },
+  data() {
+    return {
+      isFocused: false, // true if input has value or typing cursor
+      focusedMenuItem: null,
+      styles: {
+        borders: {
+          solid: 'border-solid',
+          dashed: 'border-dashed',
+          dotted: 'border-dotted',
+          double: 'border-double',
+        },
+        borderColors: {
+          primary: 'border-primary-400',
+          secondary: 'border-secondary-400',
+          light: 'border-neutral-50',
+          dark: 'border-neutral-900',
+          neutral: 'border-neutral-400',
+        },
+        borderLabelPosition: {
+          normal: '-translate-y-0.5 !text-xs',
+          medium: '-translate-y-0.5 !text-xs',
+          bold: '-translate-y-1 !text-xs',
+          extrabold: '-translate-y-2 !text-sm',
+        },
+        borderRadius: {
+          none: 'rounded-none',
+          true: 'rounded',
+          sm: 'rounded-sm',
+          md: 'rounded-md',
+          lg: 'rounded-lg',
+          xl: 'rounded-xl',
+          '2xl': 'rounded-2xl',
+          '3xl': 'rounded-3xl',
+        },
+        borderWidthSizes: {
+          outline: {
+            normal: 'border',
+            medium: 'border-2',
+            bold: 'border-4',
+            extrabold: 'border-8',
+          },
+          underline: {
+            normal: 'border-b',
+            medium: 'border-b-2',
+            bold: 'border-b-4',
+            extrabold: 'border-b-8',
+          },
+        },
+        bgColors: {
+          primary: 'bg-primary-50',
+          secondary: 'bg-secondary-50',
+          light: 'bg-neutral-50',
+          dark: 'bg-neutral-900',
+          neutral: 'bg-neutral-400',
+        },
+        textColors: {
+          primary: 'text-primary-400',
+          secondary: 'text-secondary-400',
+          light: 'text-neutral-50',
+          dark: 'text-neutral-900',
+          neutral: 'text-neutral-400',
+        },
+      },
+      items: [],
+      selected: null,
+      is_filter: true, // Todo: remove when spa is live, old backend logic uses to check if component is a viz or filter
+    }
+  },
+  computed: {
+    // Unique id for input.
+    inputUuid() {
+      // Todo: remove when spa is live
+      return 'xxxx-yy'.replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
+
+      // Todo: enable once spa is live, not supported by topcoat-core currently
+      // return nanoid()
+    },
+    topLabel() {
+      // Border label that animates to top if any of these condition are true.
+      // Unlike `inside label` top label is only active when input focus or input has value.
+      return (this.isFocused || this.selected) && !this.isTrue(this.isInsideLabel)
+    },
+  },
+  mounted() {
+    this.getItems()
+  },
+  methods: {
+    isTrue(value) {
+      // Handle `string booleans`
+      if (typeof value == 'string') {
+        return value == 'true'
+      }
+      return value
+    },
+    onVisualizationInit() {
+      const initial_value = this.getFilterValue('dropdown')
+
+      this.getItems()
+
+      if (initial_value) {
+        // Url has selected value (url param is id).
+        this.selected = this.items.filter((item) => item.id == initial_value)[0]
+      } else if (this.items.length) {
+        if (this.config.default_value) {
+          // Find id of default, if specified (default value is label).
+          this.selected = this.items.filter((item) => item.label == this.config.default_value)[0]
+        } else {
+          // Assign first item as selected.
+          this.selected = this.items[0]
+        }
+      } else {
+        // Found nothing, keep url empty.
+        return
+      }
+
+      // Todo: Remove this when spa is live
+      this.setFilterValue('dropdown', this.selected.id, true)
+
+      // Todo: Use this when spa is live
+      // this.setFilterValue({ filterName: 'query', filterValue: this.text_internal, notify: true })
+    },
+    getItems() {
+      // const idColumn = this.findColumnByTag('ids')
+      // const labelColumn = this.findColumnByTag('labels')
+
+      // const ids = this.getColumn(idColumn)
+      // const labels = this.getColumn(labelColumn)
+
+      // Note: for testing inside EM, remove before pushing to topcoat-public
+      const ids = [1, 2, 3, 4, 5]
+      const labels = ['John', 'Wick', 'Doe', 'Keanu', 'Reeves']
+
+      const items = []
+      if (ids && labels) {
+        for (let index in ids) {
+          const id = ids[index]
+          const label = labels[index]
+          items.push({ id, label })
+        }
+      }
+      this.items = items
+    },
+    selectItem(item) {
+      this.selected = item
+      this.focusedMenuItem = null
+      this.setFilterValue('dropdown', this.selected.id, true)
+    },
+  },
+}
+</script>
+
+<style scoped>
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+</style>
