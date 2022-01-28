@@ -343,11 +343,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-/* Hide scrollbar */
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-</style>
