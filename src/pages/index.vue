@@ -53,13 +53,15 @@
       <t-select-input
         label="Dark and ExtraBold"
         border-width="extrabold"
-        border-color="secondary"
-        inner-bg-color="dark"
+        border-color="dark"
+        border-highlight-color="secondary"
+        inner-bg-color="primary"
         text-color="light"
         is-rounded="3xl"
         is-outlined
         menu-highlight-color="secondary"
         menu-text-highlight-color="dark"
+        is-inside-label
       />
     </div>
   </div>

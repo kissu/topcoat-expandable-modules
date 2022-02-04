@@ -40,10 +40,12 @@
             :class="[
               // Translate label according to border-width.
               isTrue(isOutlined) && styles.bgColors[innerBgColor],
-              topLabel ? styles.borderLabelPosition[borderWidth] : 'translate-y-4 h-max',
+              topLabel
+                ? [styles.borderLabelPosition[borderWidth], 'opacity-100']
+                : 'translate-y-4 h-max opacity-40',
             ]"
           >
-            <div :class="topLabel && 'bottom-1.5'" class="relative">{{ label }}</div>
+            <div :class="topLabel && 'bottom-[5px]'" class="relative">{{ label }}</div>
           </label>
         </div>
 
@@ -52,7 +54,7 @@
           <input
             :id="inputUuid"
             :value="selected && selected.label"
-            :disabled="isTrue(isDisabled)"
+            :disabled="isTrue(isDisabled) || isTrue(isLoading)"
             :class="[styles.borderRadius[isRounded], isTrue(isInsideLabel) ? 'pt-1 pb-3' : 'py-4']"
             readonly
             class="pl-5 pr-8 bg-transparent outline-none appearance-none cursor-pointer h-max group-hover:cursor-not-allowed w-full"
@@ -72,7 +74,7 @@
           <i class="i-mdi:loading animate-spin"></i>
         </div>
         <label v-else :for="inputUuid" class="cursor-pointer">
-          <i class="transition transform i-mdi:menu-down" :class="{ 'rotate-180': isFocused }"></i>
+          <i class="transition transform i-mdi:menu-down"></i>
         </label>
       </div>
     </div>
@@ -115,10 +117,12 @@ export default {
     borderColor: {
       type: String,
       default: 'neutral',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     borderHighlightColor: {
       type: String,
       default: 'primary',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     borderStyle: {
       type: String,
@@ -133,7 +137,7 @@ export default {
     innerBgColor: {
       type: String,
       default: 'light',
-      validator: (v) => ['primary', 'secondary', 'light', 'dark'].includes(v),
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     label: {
       type: String,
@@ -142,14 +146,17 @@ export default {
     menuHighlightColor: {
       type: String,
       default: 'dark',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     menuTextHighlightColor: {
       type: String,
       default: 'light',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     textColor: {
       type: String,
       default: 'dark',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
 
     //* String-leans
@@ -238,8 +245,8 @@ export default {
           },
         },
         bgColors: {
-          primary: 'bg-primary-50',
-          secondary: 'bg-secondary-50',
+          primary: 'bg-primary-400',
+          secondary: 'bg-secondary-400',
           light: 'bg-neutral-50',
           dark: 'bg-neutral-900',
           neutral: 'bg-neutral-400',
@@ -252,7 +259,29 @@ export default {
           neutral: 'text-neutral-400',
         },
       },
-      items: [],
+      // Fake values, remove before pushing to topcoat-public
+      items: [
+        {
+          id: 1,
+          label: 'John',
+        },
+        {
+          id: 2,
+          label: 'Wick',
+        },
+        {
+          id: 3,
+          label: 'Doe',
+        },
+        {
+          id: 4,
+          label: 'Keanu',
+        },
+        {
+          id: 5,
+          label: 'Reeves',
+        },
+      ],
       selected: null,
       is_filter: true, // Todo: remove when spa is live, old backend logic uses to check if component is a viz or filter
     }
@@ -275,9 +304,6 @@ export default {
       // Unlike `inside label` top label is only active when input focus or input has value.
       return (this.isFocused || this.selected) && !this.isTrue(this.isInsideLabel)
     },
-  },
-  mounted() {
-    this.getItems()
   },
   methods: {
     isTrue(value) {
@@ -315,15 +341,11 @@ export default {
       // this.setFilterValue({ filterName: 'query', filterValue: this.text_internal, notify: true })
     },
     getItems() {
-      // const idColumn = this.findColumnByTag('ids')
-      // const labelColumn = this.findColumnByTag('labels')
+      const idColumn = this.findColumnByTag('ids')
+      const labelColumn = this.findColumnByTag('labels')
 
-      // const ids = this.getColumn(idColumn)
-      // const labels = this.getColumn(labelColumn)
-
-      // Note: for testing inside EM, remove before pushing to topcoat-public
-      const ids = [1, 2, 3, 4, 5]
-      const labels = ['John', 'Wick', 'Doe', 'Keanu', 'Reeves']
+      const ids = this.getColumn(idColumn)
+      const labels = this.getColumn(labelColumn)
 
       const items = []
       if (ids && labels) {
@@ -343,3 +365,18 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+</style>
