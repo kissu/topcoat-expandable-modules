@@ -81,7 +81,7 @@
 
     <!-- Menu -->
     <div
-      v-show="items.length && (isFocused || focusedMenuItem)"
+      v-show="items?.length && (isFocused || focusedMenuItem)"
       class="absolute top-0 z-10 w-full max-h-48 shadow-2xl overflow-auto"
       :class="[styles.bgColors[innerBgColor], styles.borderRadius[isRounded], styles.textColors[textColor]]"
     >
