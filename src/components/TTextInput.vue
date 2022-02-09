@@ -40,7 +40,9 @@
           :class="[
             // Translate label according to border-width.
             isTrue(isOutlined) && styles.bgColors[innerBgColor],
-            topLabel ? styles.borderLabelPosition[borderWidth] : 'translate-y-4 h-max',
+            topLabel
+              ? [styles.borderLabelPosition[borderWidth], 'opacity-100']
+              : 'translate-y-4 h-max opacity-40',
           ]"
         >
           <div :class="topLabel && 'bottom-1.5'" class="relative">{{ label }}</div>
