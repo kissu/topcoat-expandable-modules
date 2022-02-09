@@ -37,5 +37,25 @@
         is-outlined
       />
     </div>
+    <h1 class="pb-6">Tabs</h1>
+    <div class="flex gap-5 flex-wrap">
+      <div class="flex">
+        <t-tab border-width="bold" border-style="dashed" is-elevated is-selected title="Page 1" />
+        <t-tab is-elevated title="Page 2" />
+      </div>
+      <div class="flex">
+        <t-tab
+          inner-bg-color="primary"
+          title-color="light"
+          border-color="secondary"
+          is-elevated
+          is-selected
+          title-size="lg"
+          title="Page 3"
+        >
+        </t-tab>
+        <t-tab inner-bg-color="dark" title-color="light" is-elevated title-size="lg" title="Page 4" />
+      </div>
+    </div>
   </div>
 </template>
