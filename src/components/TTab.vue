@@ -1,47 +1,41 @@
 <template>
-  <div class="relative">
+  <div class="h-max" :class="isSidebarTab && 'w-full'" @click="setActive">
     <div
-      class="w-max py-1 px-3 cursor-pointer transition-colors bg-opacity-95 hover:bg-opacity-100"
+      class="p-3 whitespace-nowrap transition-colors cursor-pointer w-full bg-opacity-95 hover:bg-opacity-100"
       :class="[
         isElevated && 'shadow',
-        isSelected && [styles.borders[borderStyle], styles.borderWidthSizes[borderWidth], 'font-semibold'],
+        isActive ? [styles.borders[lineStyle], styles.borderColors[lineColor]] : 'border-transparent',
         styles.bgColors[innerBgColor],
-        styles.borderColors[borderColor],
+        styles.borderRadius[isRounded],
+        styles.borderWidthSizes[linePosition][lineSize],
       ]"
     >
-      <div class="pb-3 text-sm" :class="[styles.fontSizes[titleSize], styles.textColors[titleColor]]">
-        {{ title }}
+      <div
+        class="text-sm flex flex-col"
+        :class="[styles.fontSizes[titleSize], isActive ? 'text-opacity-100' : 'text-opacity-90', textColor]"
+      >
+        <slot></slot>
       </div>
-      <slot></slot>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  // eslint-disable-next-line
+  name: 't-tab',
   props: {
     // Strings
-    borderColor: {
+    activeSection: {
       type: String,
-      default: 'neutral',
-      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
-    },
-    borderStyle: {
-      type: String,
-      default: 'solid',
-      validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
-    },
-    borderWidth: {
-      type: String,
-      default: 'medium',
-      validator: (v) => ['normal', 'medium', 'bold', 'extrabold'].includes(v),
+      default: '',
     },
     innerBgColor: {
       type: String,
       default: 'light',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
-    title: {
+    targetId: {
       type: String,
       default: '',
     },
@@ -50,24 +44,47 @@ export default {
       default: 'dark',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
+    titleHighlightColor: {
+      type: String,
+      default: '', // Should use titleColor only if no value provided
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+    },
     titleSize: {
       type: String,
       default: 'sm',
       validator: (v) => ['sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
     },
+    lineColor: {
+      type: String,
+      default: 'neutral',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+    },
+    lineStyle: {
+      type: String,
+      default: 'solid',
+      validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
+    },
+    lineSize: {
+      type: String,
+      default: 'medium',
+      validator: (v) => ['normal', 'medium', 'bold', 'extrabold'].includes(v),
+    },
+    url: {
+      type: String,
+      default: '',
+    },
 
-    // Stringleans
+    // Booleans
     isElevated: {
       type: Boolean,
       default: false,
     },
-    isSelected: {
-      type: Boolean,
-      default: false,
-    },
-    isOutlined: {
-      type: Boolean,
-      default: false,
+
+    // Stringleans
+    isRounded: {
+      type: [Boolean, String],
+      default: 'none',
+      validator: (v) => ['true', 'none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
     },
   },
   data() {
@@ -93,11 +110,29 @@ export default {
           dark: 'border-neutral-900',
           neutral: 'border-neutral-400',
         },
+        borderRadius: {
+          none: 'rounded-none',
+          true: 'rounded',
+          sm: 'rounded-sm',
+          md: 'rounded-md',
+          lg: 'rounded-lg',
+          xl: 'rounded-xl',
+          '2xl': 'rounded-2xl',
+          '3xl': 'rounded-3xl',
+        },
         borderWidthSizes: {
-          normal: 'border-b',
-          medium: 'border-b-2',
-          bold: 'border-b-4',
-          extrabold: 'border-b-8',
+          bottom: {
+            normal: 'border-b',
+            medium: 'border-b-2',
+            bold: 'border-b-4',
+            extrabold: 'border-b-8',
+          },
+          right: {
+            normal: 'border-r',
+            medium: 'border-r-2',
+            bold: 'border-r-4',
+            extrabold: 'border-r-8',
+          },
         },
         fontSizes: {
           sm: 'text-sm',
@@ -116,6 +151,62 @@ export default {
         },
       },
     }
+  },
+  computed: {
+    currentActiveSection() {
+      if (this.$parent.activeSection) {
+        return this.$parent.activeSection
+      }
+      return null
+    },
+    hasParentWrapper() {
+      return this.$parent.activeSection !== undefined
+    },
+    isActive() {
+      return this.currentActiveSection === this.targetId
+    },
+    isSidebarTab() {
+      return this.$parent.isSidebar
+    },
+    linePosition() {
+      return this.isSidebarTab ? 'right' : 'bottom'
+    },
+    textColor() {
+      if (this.isActive && this.titleHighlightColor) {
+        return this.styles.textColors[this.titleHighlightColor]
+      }
+      return this.styles.textColors[this.titleColor]
+    },
+  },
+  mounted() {
+    if (!this.currentActiveSection && this.hasParentWrapper) {
+      this.setActive()
+    }
+  },
+  methods: {
+    setActive() {
+      // If has url, open it new tab.
+      if (this.url) {
+        return window.open(this.url, '_blank')
+      }
+
+      // If part of a tab family, set active.
+      if (this.hasParentWrapper) {
+        this.$parent.setActive(this.targetId)
+      }
+
+      // Set attached section active
+      const section = document.getElementById(this.targetId)
+      if (section) {
+        if (this.hasParentWrapper) {
+          return (section.style.display = 'flex')
+        }
+
+        // If not part of parent, work as a toggler
+        const isVisible = section.style.display === 'flex'
+        section.style.display = isVisible ? 'none' : 'flex'
+      }
+    },
   },
 }
 </script>
