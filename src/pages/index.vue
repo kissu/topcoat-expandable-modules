@@ -5,10 +5,14 @@
       tabs-bg-color="dark"
       title-color="light"
       title-highlight-color="secondary"
-      line-color="secondary"
-      line-style="dashed"
+      tab-line-color="secondary"
+      tab-line-style="dashed"
       content-bg-color="dark"
       content-text-color="light"
+      is-outlined
+      border-color="secondary"
+      border-width="bold"
+      :is-rounded="true"
     >
       <div title="Section 1">This is section 1</div>
       <div title="Section 2">This is section 2</div>

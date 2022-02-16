@@ -1,7 +1,16 @@
 <template>
   <div
-    class="h-max my-2 flex w-full shadow rounded overflow-x-hidden"
-    :class="isVertical ? 'flex-row' : 'flex-col'"
+    class="h-max my-2 flex w-full shadow overflow-x-hidden"
+    :class="[
+      isVertical ? 'flex-row' : 'flex-col',
+      isOutlined && [
+        'border',
+        styles.borders[borderStyle],
+        styles.borderWidthSizes.outline[borderWidth],
+        styles.borderColors[borderColor],
+      ],
+      styles.borderRadius[isRounded],
+    ]"
   >
     <!-- Tab Buttons -->
     <div class="flex" :class="[styles.bgColors[tabsBgColor], isVertical ? 'flex-col w-max' : 'w-full']">
@@ -11,14 +20,14 @@
         class="p-3 whitespace-nowrap transition-colors cursor-pointer bg-opacity-95 hover:bg-opacity-100"
         :class="[
           styles.bgColors[tabsBgColor],
-          styles.borderWidthSizes[linePosition][lineSize],
+          styles.borderWidthSizes[linePosition][tabLineSize],
           styles.fontSizes[titleSize],
           isVertical ? 'w-full' : 'w-max',
           activeIndex === index
             ? [
                 'text-opacity-100',
-                styles.borders[lineStyle],
-                styles.borderColors[lineColor],
+                styles.borders[tabLineStyle],
+                styles.borderColors[tabLineColor],
                 styles.textColors[titleHighlightColor],
               ]
             : ['text-opacity-90', 'border-transparent', styles.textColors[titleColor]],
@@ -45,19 +54,19 @@ export default {
   name: 't-tabs',
   props: {
     // Strings
-    lineColor: {
+    borderColor: {
       type: String,
-      default: 'neutral',
+      default: 'transparent',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
-    lineStyle: {
+    borderStyle: {
       type: String,
       default: 'solid',
       validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
     },
-    lineSize: {
+    borderWidth: {
       type: String,
-      default: 'medium',
+      default: 'normal',
       validator: (v) => ['normal', 'medium', 'bold', 'extrabold'].includes(v),
     },
     contentBgColor: {
@@ -74,6 +83,21 @@ export default {
       type: String,
       default: 'light',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+    },
+    tabLineColor: {
+      type: String,
+      default: 'neutral',
+      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+    },
+    tabLineStyle: {
+      type: String,
+      default: 'solid',
+      validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
+    },
+    tabLineSize: {
+      type: String,
+      default: 'medium',
+      validator: (v) => ['normal', 'medium', 'bold', 'extrabold'].includes(v),
     },
     titleColor: {
       type: String,
@@ -92,9 +116,18 @@ export default {
     },
 
     // Booleans
+    isOutlined: {
+      type: Boolean,
+      default: false,
+    },
     isVertical: {
       type: Boolean,
       default: false,
+    },
+    isRounded: {
+      type: [Boolean, String],
+      default: 'none',
+      validator: (v) => ['true', 'none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
     },
   },
   data() {
@@ -123,6 +156,16 @@ export default {
           dark: 'border-neutral-900',
           neutral: 'border-neutral-400',
         },
+        borderRadius: {
+          none: 'rounded-none',
+          true: 'rounded',
+          sm: 'rounded-sm',
+          md: 'rounded-md',
+          lg: 'rounded-lg',
+          xl: 'rounded-xl',
+          '2xl': 'rounded-2xl',
+          '3xl': 'rounded-3xl',
+        },
         borderWidthSizes: {
           bottom: {
             normal: 'border-b',
@@ -135,6 +178,12 @@ export default {
             medium: 'border-r-2',
             bold: 'border-r-4',
             extrabold: 'border-r-8',
+          },
+          outline: {
+            normal: 'border',
+            medium: 'border-2',
+            bold: 'border-4',
+            extrabold: 'border-8',
           },
         },
         fontSizes: {
