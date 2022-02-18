@@ -84,7 +84,7 @@
 
     <!-- Menu -->
     <div
-      v-show="items.length && (isFocused || focusedMenuItem)"
+      v-show="items?.length && (isFocused || focusedMenuItem)"
       class="absolute top-0 z-10 w-full max-h-48 shadow-2xl overflow-auto"
       :class="[
         styles.bgColors[innerBgColor],
@@ -221,10 +221,10 @@ export default {
           neutral: 'border-neutral-400',
         },
         borderLabelPosition: {
-          normal: '-translate-y-0.5 !text-xs',
-          medium: '-translate-y-0.5 !text-xs',
-          bold: '-translate-y-1 !text-xs',
-          extrabold: '-translate-y-2 !text-sm',
+          normal: '-translate-y-[3px] text-xs',
+          medium: '-translate-y-[3px] text-xs',
+          bold: '-translate-y-[4px] text-xs',
+          extrabold: '-translate-y-2 text-sm',
         },
         borderRadius: {
           none: 'rounded-none',
