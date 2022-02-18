@@ -6,13 +6,13 @@
         styles.borders[borderStyle],
         styles.textColors[textColor],
 
-        isTrue(isOutlined) && [styles.bgColors[innerBgColor], styles.borderRadius[isRounded]],
-        isTrue(isDisabled) && 'opacity-30 group',
-        isTrue(isError) && 'border-error-400',
-        !isTrue(isError) && isFocused && styles.borderColors[borderHighlightColor],
-        !isTrue(isError) && !isFocused && styles.borderColors[borderColor],
+        stringleanIsOutlined && [styles.bgColors[innerBgColor], styles.borderRadius[stringleanIsRounded]],
+        stringleanIsDisabled && 'opacity-30 group',
+        stringleanIsError && 'border-error-400',
+        !stringleanIsError && isFocused && styles.borderColors[borderHighlightColor],
+        !stringleanIsError && !isFocused && styles.borderColors[borderColor],
 
-        isTrue(isOutlined)
+        stringleanIsOutlined
           ? styles.borderWidthSizes.outline[borderWidth]
           : styles.borderWidthSizes.underline[borderWidth],
       ]"
@@ -21,12 +21,12 @@
       <div class="flex flex-col justify-center w-full">
         <div
           class="text-left transition-colors w-max"
-          :class="[isTrue(isInsideLabel) && 'pt-2', isTrue(isError) && 'text-error-400']"
+          :class="[stringleanIsInsideLabel && 'pt-2', stringleanIsError && 'text-error-400']"
         >
           <!-- Inside Label -->
           <label
-            v-if="isTrue(isInsideLabel)"
-            :for="inputUuid"
+            v-if="stringleanIsInsideLabel"
+            :for="computedInputUuid"
             class="top-0 px-1 pb-1 ml-4 text-sm opacity-80 group-hover:cursor-not-allowed"
           >
             {{ label }}
@@ -36,10 +36,10 @@
           <label
             v-else
             class="absolute px-1 ml-4 transition-transform transform group-hover:cursor-not-allowed"
-            :for="inputUuid"
+            :for="computedInputUuid"
             :class="[
               // Translate label according to border-width.
-              isTrue(isOutlined) && styles.bgColors[innerBgColor],
+              stringleanIsOutlined && styles.bgColors[innerBgColor],
               topLabel
                 ? [styles.borderLabelPosition[borderWidth], 'opacity-100']
                 : 'translate-y-4 h-max opacity-40',
@@ -52,10 +52,13 @@
         <div>
           <!-- Select Input -->
           <input
-            :id="inputUuid"
+            :id="computedInputUuid"
             :value="selected && selected.label"
-            :disabled="isTrue(isDisabled) || isTrue(isLoading)"
-            :class="[styles.borderRadius[isRounded], isTrue(isInsideLabel) ? 'pt-1 pb-3' : 'py-4']"
+            :disabled="stringleanIsDisabled || stringleanIsLoading"
+            :class="[
+              styles.borderRadius[stringleanIsRounded],
+              stringleanIsInsideLabel ? 'pt-1 pb-3' : 'py-4',
+            ]"
             readonly
             class="pl-5 pr-8 bg-transparent outline-none appearance-none cursor-pointer h-max group-hover:cursor-not-allowed w-full"
             aria-label="select field"
@@ -70,10 +73,10 @@
         class="absolute top-0 bottom-0 right-0 pt-2 pr-3 my-auto h-max"
         :class="styles.textColors[textColor]"
       >
-        <div v-if="isTrue(isLoading)">
+        <div v-if="stringleanIsLoading">
           <i class="i-mdi:loading animate-spin"></i>
         </div>
-        <label v-else :for="inputUuid" class="cursor-pointer">
+        <label v-else :for="computedInputUuid" class="cursor-pointer">
           <i class="transition transform i-mdi:menu-down"></i>
         </label>
       </div>
@@ -83,7 +86,11 @@
     <div
       v-show="items.length && (isFocused || focusedMenuItem)"
       class="absolute top-0 z-10 w-full max-h-48 shadow-2xl overflow-auto"
-      :class="[styles.bgColors[innerBgColor], styles.borderRadius[isRounded], styles.textColors[textColor]]"
+      :class="[
+        styles.bgColors[innerBgColor],
+        styles.borderRadius[stringleanIsRounded],
+        styles.textColors[textColor],
+      ]"
     >
       <!-- Options -->
       <div
@@ -106,8 +113,7 @@
 </template>
 
 <script>
-// import { nanoid } from 'nanoid'
-// Todo: enable once spa is live, not supported by topcoat-core currently
+import { computedInputUuid } from '~/utils/helpers'
 
 export default {
   // eslint-disable-next-line
@@ -287,32 +293,14 @@ export default {
     }
   },
   computed: {
-    // Unique id for input.
-    inputUuid() {
-      // Todo: remove when spa is live
-      return 'xxxx-yy'.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0,
-          v = c == 'x' ? r : (r & 0x3) | 0x8
-        return v.toString(16)
-      })
-
-      // Todo: enable once spa is live, not supported by topcoat-core currently
-      // return nanoid()
-    },
+    computedInputUuid,
     topLabel() {
       // Border label that animates to top if any of these condition are true.
       // Unlike `inside label` top label is only active when input focus or input has value.
-      return (this.isFocused || this.selected) && !this.isTrue(this.isInsideLabel)
+      return (this.isFocused || this.selected) && !this.stringleanIsInsideLabel
     },
   },
   methods: {
-    isTrue(value) {
-      // Handle `string booleans`
-      if (typeof value == 'string') {
-        return value == 'true'
-      }
-      return value
-    },
     onVisualizationInit() {
       const initial_value = this.getFilterValue('dropdown')
 
