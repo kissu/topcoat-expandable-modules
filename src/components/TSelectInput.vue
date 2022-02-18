@@ -365,18 +365,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-::-webkit-scrollbar {
-  width: 5px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background-color: transparent;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 10px;
-}
-</style>
