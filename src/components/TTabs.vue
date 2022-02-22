@@ -14,28 +14,21 @@
   >
     <!-- Tab Buttons -->
     <div class="flex" :class="[styles.bgColors[tabsBgColor], isVertical ? 'flex-col w-max' : 'w-full']">
-      <div
+      <t-button
         v-for="(child, index) in childNodes"
         :key="index"
-        class="p-3 whitespace-nowrap transition-colors cursor-pointer bg-opacity-95 hover:bg-opacity-100"
-        :class="[
-          styles.bgColors[tabsBgColor],
-          styles.borderWidthSizes[linePosition][tabLineSize],
-          styles.fontSizes[titleSize],
-          isVertical ? 'w-full' : 'w-max',
-          activeIndex === index
-            ? [
-                'text-opacity-100',
-                styles.borders[tabLineStyle],
-                styles.borderColors[tabLineColor],
-                styles.textColors[titleHighlightColor],
-              ]
-            : ['text-opacity-90', 'border-transparent', styles.textColors[titleColor]],
-        ]"
-        @click="setActive(index)"
-      >
-        {{ child.title }}
-      </div>
+        :bg-color="tabsBgColor"
+        :is-active="activeIndex === index"
+        :is-vertical="isVertical"
+        :line-color="tabsLineColor"
+        :line-size="tabsLineSize"
+        :line-style="tabsLineStyle"
+        :title="child.title"
+        :title-color="tabsTitleColor"
+        :title-highlight-color="tabsTitleHighlightColor"
+        :title-size="tabsTitleSize"
+        @clicked="setActive(index)"
+      />
     </div>
 
     <div
@@ -84,32 +77,32 @@ export default {
       default: 'light',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
-    tabLineColor: {
+    tabsLineColor: {
       type: String,
       default: 'neutral',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
-    tabLineStyle: {
+    tabsLineStyle: {
       type: String,
       default: 'solid',
       validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
     },
-    tabLineSize: {
+    tabsLineSize: {
       type: String,
       default: 'medium',
       validator: (v) => ['normal', 'medium', 'bold', 'extrabold'].includes(v),
     },
-    titleColor: {
+    tabsTitleColor: {
       type: String,
       default: 'dark',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
-    titleHighlightColor: {
+    tabsTitleHighlightColor: {
       type: String,
       default: 'dark',
       validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
-    titleSize: {
+    tabsTitleSize: {
       type: String,
       default: 'sm',
       validator: (v) => ['sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
@@ -186,14 +179,6 @@ export default {
             extrabold: 'border-8',
           },
         },
-        fontSizes: {
-          sm: 'text-sm',
-          md: 'text-md',
-          lg: 'text-lg',
-          xl: 'text-xl',
-          '2xl': 'text-2xl',
-          '3xl': 'text-3xl',
-        },
         textColors: {
           primary: 'text-primary-400',
           secondary: 'text-secondary-400',
@@ -203,11 +188,6 @@ export default {
         },
       },
     }
-  },
-  computed: {
-    linePosition() {
-      return this.isVertical ? 'right' : 'bottom'
-    },
   },
   mounted() {
     this.getSlotElements()
