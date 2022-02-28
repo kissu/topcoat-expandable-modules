@@ -14,9 +14,11 @@
       border-width="bold"
       is-outlined
       is-rounded
+      is-vertical
     >
       <div title="Section 1">This is section 1</div>
       <div title="Section 2">This is section 2</div>
+      <div>This is section 3</div>
     </t-tabs>
 
     <h1 class="pt-2">Text Inputs</h1>
@@ -29,12 +31,9 @@
       url="https://twitter.com/"
       title="Twitter"
       line-color="dark"
-      line-highlight-color="secondary"
-      is-rounded
+      left-icon="i-mdi:twitter"
+      elevation="2xl"
     >
-      <template #left-icon>
-        <i class="i-mdi:twitter" />
-      </template>
     </t-button>
   </div>
 </template>

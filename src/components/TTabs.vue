@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-max my-2 flex w-full shadow overflow-x-hidden"
+    class="flex w-full my-2 overflow-x-hidden shadow h-max"
     :class="[
       isVertical ? 'flex-row' : 'flex-col',
       isOutlined && [
@@ -23,7 +23,7 @@
         :line-color="tabsLineColor"
         :line-size="tabsLineSize"
         :line-style="tabsLineStyle"
-        :title="child.title"
+        :title="child.title || 'No Title'"
         :title-color="tabsTitleColor"
         :title-highlight-color="tabsTitleHighlightColor"
         :title-size="tabsTitleSize"
@@ -33,7 +33,7 @@
 
     <div
       ref="slotsContainer"
-      class="py-4 px-2 bg-opacity-90 flex"
+      class="flex w-full px-2 py-4 bg-opacity-90"
       :class="[styles.bgColors[contentBgColor], styles.textColors[contentTextColor]]"
     >
       <slot></slot>
@@ -46,11 +46,11 @@ export default {
   // eslint-disable-next-line
   name: 't-tabs',
   props: {
-    // Strings
+    //* Strings
     borderColor: {
       type: String,
       default: 'transparent',
-      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+      validator: (v) => ['transparent', 'primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     borderStyle: {
       type: String,
@@ -65,7 +65,7 @@ export default {
     contentBgColor: {
       type: String,
       default: 'transparent',
-      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+      validator: (v) => ['transparent', 'primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     contentTextColor: {
       type: String,
@@ -75,7 +75,7 @@ export default {
     tabsBgColor: {
       type: String,
       default: 'light',
-      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+      validator: (v) => ['transparent', 'primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     tabsLineColor: {
       type: String,
@@ -108,14 +108,16 @@ export default {
       validator: (v) => ['sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
     },
 
-    // Booleans
+    //* String-leans
     isOutlined: {
-      type: Boolean,
+      type: [Boolean, String],
       default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
     },
     isVertical: {
-      type: Boolean,
+      type: [Boolean, String],
       default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
     },
     isRounded: {
       type: [Boolean, String],
@@ -148,6 +150,7 @@ export default {
           light: 'border-neutral-50',
           dark: 'border-neutral-900',
           neutral: 'border-neutral-400',
+          transparent: 'border-transparent',
         },
         borderRadius: {
           none: 'rounded-none',
@@ -198,6 +201,7 @@ export default {
       const slotContainer = this.$refs.slotsContainer
       if (slotContainer) {
         this.childNodes = slotContainer.children
+        console.log(this.$slots.default())
       }
     },
     setActive(index) {

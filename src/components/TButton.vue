@@ -1,9 +1,10 @@
 <template>
   <button
-    class="p-3 whitespace-nowrap transition-colors cursor-pointer bg-opacity-95 hover:bg-opacity-100"
+    class="p-3 transition-colors cursor-pointer whitespace-nowrap bg-opacity-95 hover:bg-opacity-100"
     :class="[
       styles.bgColors[bgColor],
       styles.borderWidthSizes[linePosition][lineSize],
+      styles.shadows[elevation],
       styles.fontSizes[titleSize],
       isDisabled && 'opacity-60 !cursor-not-allowed',
       isRounded && styles.borderRadius[isRounded],
@@ -20,12 +21,15 @@
     :disabled="isDisabled"
     @click="handleClick"
   >
-    <div class="flex gap-2 items-center">
-      <slot name="left-icon"></slot>
+    <div class="flex items-center gap-2">
+      <i v-if="leftIcon" :class="leftIcon" />
       {{ title }}
-      <slot name="right-icon"></slot>
+      <i v-if="rightIcon" :class="rightIcon" />
     </div>
-    <slot></slot>
+    <div class="relative">
+      <slot></slot>
+      <i v-if="isLoading" class="i-mdi:loading animate-spin" />
+    </div>
   </button>
 </template>
 
@@ -38,11 +42,20 @@ export default {
     bgColor: {
       type: String,
       default: 'light',
+      validator: (v) => ['transparent', 'primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+    },
+    elevation: {
+      type: String,
+      default: 'none',
+    },
+    leftIcon: {
+      type: String,
+      default: '',
     },
     lineColor: {
       type: String,
       default: 'neutral',
-      validator: (v) => ['primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
+      validator: (v) => ['transparent', 'primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
     },
     lineSize: {
       type: String,
@@ -53,6 +66,10 @@ export default {
       type: String,
       default: 'solid',
       validator: (v) => ['solid', 'dashed', 'dotted', 'double'].includes(v),
+    },
+    rightIcon: {
+      type: String,
+      default: '',
     },
     title: {
       type: String,
@@ -78,18 +95,18 @@ export default {
       default: '',
     },
 
-    //* Booleans
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-    isVertical: {
-      type: Boolean,
-      default: false,
-    },
-
     //* String-leans
+    isActive: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
     isDisabled: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
+    },
+    isLoading: {
       type: [Boolean, String],
       default: false,
       validator: (v) => ['true', 'false'].includes(String(v)),
@@ -98,6 +115,12 @@ export default {
       type: [Boolean, String],
       default: 'none',
       validator: (v) => ['true', 'none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(String(v)),
+    },
+    // Todo: find better alternate for isVertical
+    isVertical: {
+      type: [Boolean, String],
+      default: false,
+      validator: (v) => ['true', 'false'].includes(String(v)),
     },
   },
   emits: ['clicked'],
@@ -124,6 +147,7 @@ export default {
           light: 'border-neutral-50',
           dark: 'border-neutral-900',
           neutral: 'border-neutral-400',
+          transparent: 'border-transparent',
         },
         borderRadius: {
           none: 'rounded-none',
@@ -162,6 +186,16 @@ export default {
           xl: 'text-xl',
           '2xl': 'text-2xl',
           '3xl': 'text-3xl',
+        },
+        shadows: {
+          normal: 'shadow',
+          sm: 'shadow-sm',
+          md: 'shadow-md',
+          lg: 'shadow-lg',
+          xl: 'shadow-xl',
+          '2xl': 'shadow-2xl',
+          inner: 'shadow-inner',
+          none: 'shadow-none',
         },
         textColors: {
           primary: 'text-primary-400',
