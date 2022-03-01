@@ -1,6 +1,8 @@
 //doc notion related: https://www.notion.so/topcoat/Data-and-Method-Stubs-for-Expandable-Modules-e8d0bb0b4fcb473facb16873545cbc38 📕
 import { mapState, mapActions } from 'pinia'
 import { useLayersStore } from '~/stores/layers'
+import { proceedIfStringlean, stringleanCase, computeStringlean } from '~/utils/helpers'
+import { computed } from 'vue'
 
 export const commonMixin = {
   computed: {
@@ -23,5 +25,22 @@ export const commonMixin = {
     unsetFilterValue({ filterName, notify = false }) {
       this.nullifyFilterValue({ filterName, notify })
     },
+  },
+}
+
+export const generateStringleans = {
+  created() {
+    for (const [key, _value] of Object.entries(this.$props)) {
+      if (proceedIfStringlean(key)) {
+        const stringleanComputed = computed(() => this[key])
+
+        Object.defineProperty(this, stringleanCase(key), {
+          get() {
+            return computeStringlean(stringleanComputed.value)
+          },
+          // do not write any `set()` here because this is just an overlay
+        })
+      }
+    }
   },
 }

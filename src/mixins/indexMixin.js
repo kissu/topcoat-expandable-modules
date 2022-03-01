@@ -1,7 +1,7 @@
 //doc https://github.com/TehShrike/deepmerge#mergeallarrayofobjects-options
 import merge from 'deepmerge'
 
-import { commonMixin } from '~/mixins/commonMixin'
+import { commonMixin, generateStringleans } from '~/mixins/commonMixin'
 import { layerMixin } from '~/mixins/layersMixin'
 import { libraryMixin } from '~/mixins/libraryMixin'
 import { visualizationMixin } from '~/mixins/visualizationMixin'
@@ -10,6 +10,6 @@ import { visualizationMixin } from '~/mixins/visualizationMixin'
 const mergeOptions = { arrayMerge: true }
 
 export const globalMixins = merge.all(
-  [commonMixin, layerMixin, libraryMixin, visualizationMixin],
+  [commonMixin, layerMixin, libraryMixin, visualizationMixin, generateStringleans],
   mergeOptions,
 )
